@@ -74,6 +74,12 @@ function applyZoom(value){
  inc.disabled=level>=MAX;
  try{localStorage.setItem(KEY,String(level))}catch(e){}
 }
+function hardReload(){
+ // Fuerza una recarga sin caché, equivalente a Ctrl+F5
+ const url=new URL(location.href);
+ url.searchParams.set("_",Date.now());
+ location.replace(url.toString());
+}
 out.onclick=()=>applyZoom(level-STEP);
 inc.onclick=()=>applyZoom(level+STEP);
 reset.onclick=()=>applyZoom(DEFAULT);
