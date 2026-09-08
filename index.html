@@ -61,7 +61,7 @@ body{font-family:Arial,sans-serif;overflow-x:hidden}
 <div id="zoom-control" aria-label="Control de tamaño">
 <button id="zoom-reset" type="button" aria-label="Restablecer tamaño">Reset</button>
 <button id="zoom-out" type="button" aria-label="Reducir tamaño">−</button>
-<span id="zoom-level">100%</span>
+<button id="zoom-level" type="button" aria-label="Actualizar página">100%</button>
 <button id="zoom-in" type="button" aria-label="Aumentar tamaño">+</button>
 </div>
 
@@ -96,6 +96,7 @@ function hardReload(){
 out.onclick=()=>applyZoom(level-STEP);
 inc.onclick=()=>applyZoom(level+STEP);
 reset.onclick=()=>applyZoom(DEFAULT);
+label.onclick=hardReload;
 applyZoom(level);
 })();
 </script>
