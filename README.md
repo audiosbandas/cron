@@ -37,3 +37,123 @@ https://atom.bio/cron_oficial
 
 
 
+
+CRON · HTML
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Enlaces</title>
+<style>
+html,body{margin:0;padding:0}
+body{font-family:Arial,sans-serif;overflow-x:hidden}
+#content{width:100%;box-sizing:border-box;padding:24px;zoom:var(--zoom-level)}
+#links{display:flex;flex-direction:column;gap:12px}
+#links a{overflow-wrap:anywhere}
+#zoom-control{position:fixed;top:12px;right:12px;z-index:9999;display:flex;align-items:center;gap:4px;padding:5px;background:rgba(255,255,255,.96);border:1px solid #ccc;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:14px}
+#zoom-control button{min-width:34px;height:30px;padding:0 7px;border:1px solid #bbb;border-radius:4px;background:#f5f5f5;color:#222;font:inherit;cursor:pointer}
+#zoom-control button:disabled{opacity:.45;cursor:default}
+#zoom-level{min-width:48px;text-align:center;user-select:none}
+@supports not (zoom:1){
+#content{transform-origin:top left;transform:scale(var(--zoom-factor));width:calc(100% / var(--zoom-factor))}
+}
+@media(max-width:480px){#zoom-control{top:8px;right:8px}#content{padding:16px}}
+</style>
+</head>
+<body>
+<div id="content">
+<div id="links">
+<h2>Audios ENLACES CRON</h2>
+<a>ÚLTIMO ENSAYO Audios:</a>
+<a href="https://drive.google.com/drive/folders/13D2UIdSrkHPImbrZSG7n1NWY3Ip7f14G">Drive AUDIOS BANDAS @DRIVE / 2_CRON [Cron || proyectocron@gmail.com]</a>
+<br>
+<a href="https://drive.google.com/file/d/1GVhY3cF3opzpMvDJBuhrtfAqeKa4Q93y/view?usp=drivesdk">260902_ALaDeriva_0486_CR.wav</a>
+
+<br><br>
+<a>Otros Audios:</a>
+<h3>DRIVE ProyectoCron@DRIVE</h3>
+
+<a href="https://drive.google.com/drive/folders/1w9ougNPpPdFpR2eBS5K2GjBU9BuSn05q">Ensayos proyectocron@DRIVE</a>
+<br>
+
+<h3>DRIVE proyectocron2</h3>
+<a>(Otros Audios):</a>
+<a href="https://drive.google.com/drive/folders/1WDGzUW0Fa16evcVXz9img-4j_Sm3jJ_5">Ensayos proyectocron2@DRIVE</a>
+
+<br><br>
+
+<h2>LinkTree</h2>
+<a></a>
+<a href="https://linktr.ee/cron.oficial">https://linktr.ee/cron.oficial</a>
+
+<br><br>
+
+<h3>Backup</h3>
+<a>Atom.bio</a>
+<a href="https://atom.bio/cron_oficial">https://atom.bio/cron_oficial</a>
+
+
+<br><br>
+
+
+<audio controls preload="metadata">
+  <source src="https://drive.google.com/file/d/1GVhY3cF3opzpMvDJBuhrtfAqeKa4Q93y/view?usp=drivesdk" type="audio/mpeg">
+  
+</audio>
+
+
+
+
+
+
+</div>
+</div>
+
+<div id="zoom-control" aria-label="Control de tamaño">
+<button id="zoom-reset" type="button" aria-label="Restablecer tamaño">Reset</button>
+<button id="zoom-out" type="button" aria-label="Reducir tamaño">−</button>
+<button id="zoom-level" type="button" aria-label="Actualizar página">100%</button>
+<button id="zoom-in" type="button" aria-label="Aumentar tamaño">+</button>
+</div>
+
+<script>
+(()=> {
+const MIN=70,MAX=160,STEP=10,DEFAULT=100,KEY="enlaces-zoom";
+const content=document.getElementById("content");
+const label=document.getElementById("zoom-level");
+const out=document.getElementById("zoom-out");
+const inc=document.getElementById("zoom-in");
+const reset=document.getElementById("zoom-reset");
+let level=DEFAULT;
+try{
+ const saved=Number(localStorage.getItem(KEY));
+ if(Number.isFinite(saved)&&saved>=MIN&&saved<=MAX&&saved%STEP===0) level=saved;
+}catch(e){}
+function applyZoom(value){
+ level=Math.min(MAX,Math.max(MIN,value));
+ content.style.setProperty("--zoom-level",level+"%");
+ content.style.setProperty("--zoom-factor",level/100);
+ label.textContent=level+"%";
+ out.disabled=level<=MIN;
+ inc.disabled=level>=MAX;
+ try{localStorage.setItem(KEY,String(level))}catch(e){}
+}
+function hardReload(){
+ // Fuerza una recarga sin caché, equivalente a Ctrl+F5
+ const url=new URL(location.href);
+ url.searchParams.set("_",Date.now());
+ location.replace(url.toString());
+}
+out.onclick=()=>applyZoom(level-STEP);
+inc.onclick=()=>applyZoom(level+STEP);
+reset.onclick=()=>applyZoom(DEFAULT);
+label.onclick=hardReload;
+applyZoom(level);
+})();
+</script>
+</body>
+</html>
+
+
