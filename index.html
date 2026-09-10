@@ -102,6 +102,8 @@ body{font-family:Arial,sans-serif;overflow-x:hidden}
         });
     }
 
+</script>
+    
 
 const MIN=70,MAX=160,STEP=10,DEFAULT=100,STORAGE_KEY="enlaces-zoom";
 const content=document.getElementById("content");
@@ -123,6 +125,6 @@ zoomOut.addEventListener("click",()=>aplicarZoom(level-STEP));
 zoomIn.addEventListener("click",()=>aplicarZoom(level+STEP));
 zoomReset.addEventListener("click",()=>aplicarZoom(DEFAULT));
 aplicarZoom(level);
-</script>
+//</script>
 </body>
 </html>
