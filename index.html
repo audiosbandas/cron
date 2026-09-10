@@ -1,24 +1,27 @@
-CRON · HTML
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Enlaces</title>
+<title>CRON · HTML</title>
 <style>
 html,body{margin:0;padding:0}
 body{font-family:Arial,sans-serif;overflow-x:hidden}
-#content{width:100%;box-sizing:border-box;padding:24px;zoom:var(--zoom-level)}
+#content{width:100%;box-sizing:border-box;padding:24px;zoom:var(--zoom-factor,1)}
 #links{display:flex;flex-direction:column;gap:12px}
 #links a{overflow-wrap:anywhere}
+#lista-audios{display:flex;flex-direction:column;gap:2px}
+.audio-item{margin:0}
+#lista-audios a{display:block;line-height:1.15;text-decoration:none;overflow-wrap:anywhere}
+#lista-audios a:hover{text-decoration:underline}
+#estado{margin:8px 0}
 #zoom-control{position:fixed;top:12px;right:12px;z-index:9999;display:flex;align-items:center;gap:4px;padding:5px;background:rgba(255,255,255,.96);border:1px solid #ccc;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:14px}
 #zoom-control button{min-width:34px;height:30px;padding:0 7px;border:1px solid #bbb;border-radius:4px;background:#f5f5f5;color:#222;font:inherit;cursor:pointer}
+#zoom-control button:hover{background:#e9e9e9}
+#zoom-control button:active{background:#ddd}
 #zoom-control button:disabled{opacity:.45;cursor:default}
 #zoom-level{min-width:48px;text-align:center;user-select:none}
-@supports not (zoom:1){
-#content{transform-origin:top left;transform:scale(var(--zoom-factor));width:calc(100% / var(--zoom-factor))}
-}
+@supports not (zoom:1){#content{transform-origin:top left;transform:scale(var(--zoom-factor,1));width:calc(100% / var(--zoom-factor,1))}}
 @media(max-width:480px){#zoom-control{top:8px;right:8px}#content{padding:16px}}
 </style>
 </head>
@@ -27,311 +30,99 @@ body{font-family:Arial,sans-serif;overflow-x:hidden}
 <div id="links">
 <h2>Audios ENLACES CRON</h2>
 <a>ÚLTIMO ENSAYO Audios:</a>
-<a href="https://drive.google.com/drive/folders/13D2UIdSrkHPImbrZSG7n1NWY3Ip7f14G">Drive AUDIOS BANDAS @DRIVE / 2_CRON [Cron || proyectocron@gmail.com]</a>
+<a href="https://drive.google.com/drive/folders/13D2UIdSrkHPImbrZSG7n1NWY3Ip7f14G" target="_blank" rel="noopener noreferrer">Drive AUDIOS BANDAS @DRIVE / 2_CRON [Cron || proyectocron@gmail.com]</a>
 <br>
-<a href="https://drive.google.com/file/d/1GVhY3cF3opzpMvDJBuhrtfAqeKa4Q93y/view?usp=drivesdk">260902_ALaDeriva_0486_CR.wav</a>
-
+<div id="estado">Cargando audios...</div>
+<div id="lista-audios"></div>
 <br><br>
 <a>Otros Audios:</a>
 <h3>DRIVE ProyectoCron@DRIVE</h3>
-
-<a href="https://drive.google.com/drive/folders/1w9ougNPpPdFpR2eBS5K2GjBU9BuSn05q">Ensayos proyectocron@DRIVE</a>
+<a href="https://drive.google.com/drive/folders/1w9ougNPpPdFpR2eBS5K2GjBU9BuSn05q" target="_blank" rel="noopener noreferrer">Ensayos proyectocron@DRIVE</a>
 <br>
-
 <h3>DRIVE proyectocron2</h3>
 <a>(Otros Audios):</a>
-<a href="https://drive.google.com/drive/folders/1WDGzUW0Fa16evcVXz9img-4j_Sm3jJ_5">Ensayos proyectocron2@DRIVE</a>
-
+<a href="https://drive.google.com/drive/folders/1WDGzUW0Fa16evcVXz9img-4j_Sm3jJ_5" target="_blank" rel="noopener noreferrer">Ensayos proyectocron2@DRIVE</a>
 <br><br>
-
 <h2>LinkTree</h2>
-<a></a>
-<a href="https://linktr.ee/cron.oficial">https://linktr.ee/cron.oficial</a>
-
+<a href="https://linktr.ee/cron.oficial" target="_blank" rel="noopener noreferrer">https://linktr.ee/cron.oficial</a>
 <br><br>
-
 <h3>Backup</h3>
 <a>Atom.bio</a>
-<a href="https://atom.bio/cron_oficial">https://atom.bio/cron_oficial</a>
-
-
-<br><br>
-
-
-<audio controls preload="metadata">
-  <source src="https://drive.google.com/uc?export=download&id=1GVhY3cF3opzpMvDJBuhrtfAqeKa4Q93y" type="audio/mpeg">
-  
-</audio>
-
-
-
-
-
-
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Audios</title>
-
-    <style>
-        body {
-            margin: 20px;
-            font-family: Arial, sans-serif;
-        }
-
-        #estado {
-            margin-bottom: 8px;
-        }
-
-        #lista-audios {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-        }
-
-        #lista-audios a {
-            display: block;
-            line-height: 1.15;
-            text-decoration: none;
-        }
-
-        #lista-audios a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-
-<body>
-
-    <div id="estado">Cargando audios...</div>
-
-    <div id="lista-audios"></div>
-
-
-<script>
-
-    /*
-     * URL de tu Google Apps Script
-     */
-    const API_URL =
-        "https://script.google.com/macros/s/AKfycbzP1dSNioOdO54r4Pg9V7M-yRTNtxyTGtxAss4CYa-eYBgHlOQfvmfmiUnE_nczc_17/exec";
-
-
-    /*
-     * Obtener folderId desde la URL
-     *
-     * Ejemplo:
-     *
-     * index.html?folderId=1ABCDEF123456789
-     */
-
-    const parametros =
-        new URLSearchParams(window.location.search);
-
-    const folderId =
-        parametros.get("folderId");
-
-
-    /*
-     * Elementos de la página
-     */
-
-    const estado =
-        document.getElementById("estado");
-
-    const lista =
-        document.getElementById("lista-audios");
-
-
-    /*
-     * Cargar archivos
-     */
-
-    async function cargarAudios() {
-
-        if (!folderId) {
-
-            estado.textContent =
-                "No se especificó una carpeta.";
-
-            return;
-        }
-
-
-        try {
-
-            const respuesta = await fetch(
-                API_URL +
-                "?folderId=" +
-                encodeURIComponent(folderId)
-           
-
-
-/*
-*           *"https://script.googleapis.com/v1/scripts
-*AKfycbxdqUP4yQRPZFQTLH0hpt0FzgPCtoppP4AYug1IfAhSZGB*diEXB7xC1M8sref9Zvp7R:run?*folderId=13D2UIdSrkHPImbrZSG7n1NWY3Ip7f14G"
-*/
-
-
-            );
-
-
-            if (!respuesta.ok) {
-
-                throw new Error(
-                    "HTTP " + respuesta.status
-                );
-
-            }
-
-
-            const datos =
-                await respuesta.json();
-
-
-            if (!datos.success) {
-
-                throw new Error(
-                    datos.error || "Error desconocido"
-                );
-
-            }
-
-
-            lista.innerHTML = "";
-
-
-            /*
-             * Mostrar archivos
-             */
-
-            if (datos.files.length === 0) {
-
-                estado.textContent =
-                    "No se encontraron archivos WAV o MP3.";
-
-                return;
-            }
-
-
-            estado.textContent =
-                datos.files.length +
-                " archivo(s) de audio";
-
-
-            datos.files.forEach(archivo => {
-
-                const enlace =
-                    document.createElement("a");
-
-
-                /*
-                 * Nombre exacto del archivo
-                 */
-
-                enlace.textContent =
-                    archivo.name;
-
-
-                /*
-                 * URL del archivo
-                 */
-
-                enlace.href =
-                    archivo.url;
-
-
-                enlace.target =
-                    "_blank";
-
-
-                enlace.rel =
-                    "noopener noreferrer";
-
-
-                lista.appendChild(enlace);
-
-            });
-
-
-        } catch (error) {
-
-            console.error(error);
-
-            estado.textContent =
-                "No se pudieron cargar los audios.";
-
-        }
-
-    }
-
-
-    /*
-     * Ejecutar
-     */
-
-    cargarAudios();
-
-</script>
-
-</body>
-</html>
-
-
-
-
-
-
-
-
+<a href="https://atom.bio/cron_oficial" target="_blank" rel="noopener noreferrer">https://atom.bio/cron_oficial</a>
 </div>
 </div>
-
 <div id="zoom-control" aria-label="Control de tamaño">
 <button id="zoom-reset" type="button" aria-label="Restablecer tamaño">Reset</button>
 <button id="zoom-out" type="button" aria-label="Reducir tamaño">−</button>
-<button id="zoom-level" type="button" aria-label="Actualizar página">100%</button>
+<span id="zoom-level" aria-label="Nivel de zoom">100%</span>
 <button id="zoom-in" type="button" aria-label="Aumentar tamaño">+</button>
 </div>
-
 <script>
-(()=> {
-const MIN=70,MAX=160,STEP=10,DEFAULT=100,KEY="enlaces-zoom";
+const API_URL="https://script.google.com/macros/s/AKfycbzP1dSNioOdO54r4Pg9V7M-yRTNtxyTGtxAss4CYa-eYBgHlOQfvmfmiUnE_nczc_17/exec";
+const folderId=new URLSearchParams(window.location.search).get("folderId");
+const estado=document.getElementById("estado");
+const lista=document.getElementById("lista-audios");
+
+function cargarAudios(){
+    if(!folderId){estado.textContent="No se especificó ninguna carpeta.";return;}
+    const callbackName="mostrarAudios_"+Date.now();
+    let script=document.createElement("script");
+    window[callbackName]=function(datos){
+        try{
+            if(!datos||!datos.success) throw new Error(datos&&datos.error?datos.error:"Respuesta inválida del servidor.");
+            lista.innerHTML="";
+            if(!datos.files||datos.files.length===0){estado.textContent="No se encontraron archivos WAV o MP3.";return;}
+            estado.textContent=datos.files.length+" archivo(s) de audio";
+            datos.files.forEach(function(archivo){
+                const elemento=document.createElement("div");
+                elemento.className="audio-item";
+                const enlace=document.createElement("a");
+                enlace.textContent=archivo.name;
+                enlace.href=archivo.url;
+                enlace.target="_blank";
+                enlace.rel="noopener noreferrer";
+                elemento.appendChild(enlace);
+                lista.appendChild(elemento);
+            });
+        }catch(error){
+            console.error("Error al procesar la respuesta:",error);
+            estado.textContent="No se pudieron cargar los audios.";
+        }finally{
+            delete window[callbackName];
+            if(script.parentNode)script.parentNode.removeChild(script);
+        }
+    };
+    script.src=API_URL+"?folderId="+encodeURIComponent(folderId)+"&callback="+encodeURIComponent(callbackName);
+    script.onerror=function(){
+        console.error("No se pudo acceder al Google Apps Script.");
+        estado.textContent="No se pudieron cargar los audios.";
+        delete window[callbackName];
+        if(script.parentNode)script.parentNode.removeChild(script);
+    };
+    document.body.appendChild(script);
+}
+cargarAudios();
+
+const MIN=70,MAX=160,STEP=10,DEFAULT=100,STORAGE_KEY="enlaces-zoom";
 const content=document.getElementById("content");
-const label=document.getElementById("zoom-level");
-const out=document.getElementById("zoom-out");
-const inc=document.getElementById("zoom-in");
-const reset=document.getElementById("zoom-reset");
+const zoomLabel=document.getElementById("zoom-level");
+const zoomOut=document.getElementById("zoom-out");
+const zoomIn=document.getElementById("zoom-in");
+const zoomReset=document.getElementById("zoom-reset");
 let level=DEFAULT;
-try{
- const saved=Number(localStorage.getItem(KEY));
- if(Number.isFinite(saved)&&saved>=MIN&&saved<=MAX&&saved%STEP===0) level=saved;
-}catch(e){}
-function applyZoom(value){
- level=Math.min(MAX,Math.max(MIN,value));
- content.style.setProperty("--zoom-level",level+"%");
- content.style.setProperty("--zoom-factor",level/100);
- label.textContent=level+"%";
- out.disabled=level<=MIN;
- inc.disabled=level>=MAX;
- try{localStorage.setItem(KEY,String(level))}catch(e){}
+try{const saved=Number(localStorage.getItem(STORAGE_KEY));if(Number.isFinite(saved)&&saved>=MIN&&saved<=MAX&&saved%STEP===0)level=saved;}catch(e){}
+function aplicarZoom(valor){
+    level=Math.min(MAX,Math.max(MIN,valor));
+    content.style.setProperty("--zoom-factor",level/100);
+    zoomLabel.textContent=level+"%";
+    zoomOut.disabled=level<=MIN;
+    zoomIn.disabled=level>=MAX;
+    try{localStorage.setItem(STORAGE_KEY,String(level));}catch(e){}
 }
-function hardReload(){
- // Fuerza una recarga sin caché, equivalente a Ctrl+F5
- const url=new URL(location.href);
- url.searchParams.set("_",Date.now());
- location.replace(url.toString());
-}
-out.onclick=()=>applyZoom(level-STEP);
-inc.onclick=()=>applyZoom(level+STEP);
-reset.onclick=()=>applyZoom(DEFAULT);
-label.onclick=hardReload;
-applyZoom(level);
-})();
+zoomOut.addEventListener("click",()=>aplicarZoom(level-STEP));
+zoomIn.addEventListener("click",()=>aplicarZoom(level+STEP));
+zoomReset.addEventListener("click",()=>aplicarZoom(DEFAULT));
+aplicarZoom(level);
 </script>
 </body>
 </html>
-
