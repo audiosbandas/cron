@@ -57,51 +57,193 @@ body{font-family:Arial,sans-serif;overflow-x:hidden}
 <span id="zoom-level" aria-label="Nivel de zoom">100%</span>
 <button id="zoom-in" type="button" aria-label="Aumentar tamaño">+</button>
 </div>
-<script>
-const API_URL="https://script.google.com/macros/s/AKfycbzP1dSNioOdO54r4Pg9V7M-yRTNtxyTGtxAss4CYa-eYBgHlOQfvmfmiUnE_nczc_17/exec";
-const folderId=new URLSearchParams(window.location.search).get("folderId");
-const estado=document.getElementById("estado");
-const lista=document.getElementById("lista-audios");
 
-function cargarAudios(){
-    if(!folderId){estado.textContent="No se especificó ninguna carpeta.";return;}
-    const callbackName="mostrarAudios_"+Date.now();
-    let script=document.createElement("script");
-    window[callbackName]=function(datos){
-        try{
-            if(!datos||!datos.success) throw new Error(datos&&datos.error?datos.error:"Respuesta inválida del servidor.");
-            lista.innerHTML="";
-            if(!datos.files||datos.files.length===0){estado.textContent="No se encontraron archivos WAV o MP3.";return;}
-            estado.textContent=datos.files.length+" archivo(s) de audio";
-            datos.files.forEach(function(archivo){
-                const elemento=document.createElement("div");
-                elemento.className="audio-item";
-                const enlace=document.createElement("a");
-                enlace.textContent=archivo.name;
-                enlace.href=archivo.url;
-                enlace.target="_blank";
-                enlace.rel="noopener noreferrer";
-                elemento.appendChild(enlace);
-                lista.appendChild(elemento);
-            });
-        }catch(error){
-            console.error("Error al procesar la respuesta:",error);
-            estado.textContent="No se pudieron cargar los audios.";
-        }finally{
-            delete window[callbackName];
-            if(script.parentNode)script.parentNode.removeChild(script);
+<div id="estado">
+    Cargando audios...
+</div>
+
+<div id="lista-audios"></div>
+
+    
+<script>
+
+const API_URL =
+    "https://script.google.com/macros/s/AKfycbzP1dSNioOdO54r4Pg9V7M-yRTNtxyTGtxAss4CYa-eYBgHlOQfvmfmiUnE_nczc_17/exec";
+
+
+const parametros =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const folderId =
+    parametros.get("folderId");
+
+
+const estado =
+    document.getElementById("estado");
+
+
+const lista =
+    document.getElementById("lista-audios");
+
+
+function cargarAudios() {
+
+    if (!folderId) {
+
+        estado.textContent =
+            "No se especificó ninguna carpeta.";
+
+        return;
+    }
+
+
+    /*
+     * Nombre único para la función
+     * que recibirá la respuesta.
+     */
+
+    const callback =
+        "callback_" +
+        Date.now();
+
+
+    /*
+     * Crear función global.
+     */
+
+    window[callback] = function(datos) {
+
+        try {
+
+            if (
+                !datos ||
+                datos.success !== true
+            ) {
+
+                throw new Error(
+                    datos && datos.error
+                        ? datos.error
+                        : "Respuesta inválida."
+                );
+            }
+
+
+            lista.innerHTML = "";
+
+
+            if (
+                !datos.files ||
+                datos.files.length === 0
+            ) {
+
+                estado.textContent =
+                    "No se encontraron archivos WAV o MP3.";
+
+                return;
+            }
+
+
+            estado.textContent =
+                datos.files.length +
+                " archivo(s) de audio";
+
+
+            datos.files.forEach(
+                function(archivo) {
+
+                    const item =
+                        document.createElement("div");
+
+                    item.className =
+                        "audio-item";
+
+
+                    const enlace =
+                        document.createElement("a");
+
+                    enlace.textContent =
+                        archivo.name;
+
+
+                    enlace.href =
+                        archivo.url;
+
+
+                    enlace.target =
+                        "_blank";
+
+
+                    enlace.rel =
+                        "noopener noreferrer";
+
+
+                    item.appendChild(enlace);
+
+                    lista.appendChild(item);
+
+                }
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Error procesando audios:",
+                error
+            );
+
+            estado.textContent =
+                "No se pudieron cargar los audios.";
+
         }
+
     };
-    script.src=API_URL+"?folderId="+encodeURIComponent(folderId)+"&callback="+encodeURIComponent(callbackName);
-    script.onerror=function(){
-        console.error("No se pudo acceder al Google Apps Script.");
-        estado.textContent="No se pudieron cargar los audios.";
-        delete window[callbackName];
-        if(script.parentNode)script.parentNode.removeChild(script);
+
+
+    /*
+     * Crear <script> dinámicamente.
+     *
+     * Esto evita utilizar fetch() y, por lo tanto,
+     * evita el problema de CORS entre GitHub Pages
+     * y Google Apps Script.
+     */
+
+    const script =
+        document.createElement("script");
+
+
+    script.src =
+        API_URL +
+        "?folderId=" +
+        encodeURIComponent(folderId) +
+        "&callback=" +
+        encodeURIComponent(callback);
+
+
+    script.onerror = function() {
+
+        console.error(
+            "No se pudo cargar la respuesta de Apps Script."
+        );
+
+        estado.textContent =
+            "No se pudieron cargar los audios.";
+
+        delete window[callback];
+
     };
+
+
     document.body.appendChild(script);
+
 }
+
+
 cargarAudios();
+
 
 const MIN=70,MAX=160,STEP=10,DEFAULT=100,STORAGE_KEY="enlaces-zoom";
 const content=document.getElementById("content");
