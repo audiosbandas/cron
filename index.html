@@ -60,182 +60,51 @@ body{font-family:Arial,sans-serif;overflow-x:hidden}
     
 <script>
 
-const API_URL =
-    "https://script.google.com/macros/s/AKfycbzP1dSNioOdO54r4Pg9V7M-yRTNtxyTGtxAss4CYa-eYBgHlOQfvmfmiUnE_nczc_17/exec";
-
-
-const parametros =
-    new URLSearchParams(
-        window.location.search
-    );
-
-
-const folderId =
-    parametros.get("folderId");
-
-
-const estado =
-    document.getElementById("estado");
-
-
-const lista =
-    document.getElementById("lista-audios");
-
-
-function cargarAudios() {
-
-    if (!folderId) {
-
-        estado.textContent =
-            "No se especificó ninguna carpeta.";
-
-        return;
+    // Reemplazar por la URL de tu Apps Script (terminada en /exec)
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjGvypOF81CUU5_gI4T_iiY-Otn3pH60A_JEsvdykRtidnubTHsO0rThUfTJwEsRST/exec";
+ 
+    const params = new URLSearchParams(window.location.search);
+    const folderId = params.get("folderId");
+ 
+    const lista = document.getElementById("lista");
+ 
+    function mostrarMensaje(texto, esError = false) {
+      lista.innerHTML = `<li class="mensaje${esError ? ' error' : ''}">${texto}</li>`;
     }
-
-
-    /*
-     * Nombre único para la función
-     * que recibirá la respuesta.
-     */
-
-    const callback =
-        "callback_" +
-        Date.now();
-
-
-    /*
-     * Crear función global.
-     */
-
-    window[callback] = function(datos) {
-
-        try {
-
-            if (
-                !datos ||
-                datos.success !== true
-            ) {
-
-                throw new Error(
-                    datos && datos.error
-                        ? datos.error
-                        : "Respuesta inválida."
-                );
-            }
-
-
-            lista.innerHTML = "";
-
-
-            if (
-                !datos.files ||
-                datos.files.length === 0
-            ) {
-
-                estado.textContent =
-                    "No se encontraron archivos WAV o MP3.";
-
-                return;
-            }
-
-
-            estado.textContent =
-                datos.files.length +
-                " archivo(s) de audio";
-
-
-            datos.files.forEach(
-                function(archivo) {
-
-                    const item =
-                        document.createElement("div");
-
-                    item.className =
-                        "audio-item";
-
-
-                    const enlace =
-                        document.createElement("a");
-
-                    enlace.textContent =
-                        archivo.name;
-
-
-                    enlace.href =
-                        archivo.url;
-
-
-                    enlace.target =
-                        "_blank";
-
-
-                    enlace.rel =
-                        "noopener noreferrer";
-
-
-                    item.appendChild(enlace);
-
-                    lista.appendChild(item);
-
-                }
-            );
-
-
-        } catch (error) {
-
-            console.error(
-                "Error procesando audios:",
-                error
-            );
-
-            estado.textContent =
-                "No se pudieron cargar los audios.";
-
-        }
-
-    };
-
-
-    /*
-     * Crear <script> dinámicamente.
-     *
-     * Esto evita utilizar fetch() y, por lo tanto,
-     * evita el problema de CORS entre GitHub Pages
-     * y Google Apps Script.
-     */
-
-    const script =
-        document.createElement("script");
-
-
-    script.src =
-        API_URL +
-        "?folderId=" +
-        encodeURIComponent(folderId) +
-        "&callback=" +
-        encodeURIComponent(callback);
-
-
-    script.onerror = function() {
-
-        console.error(
-            "No se pudo cargar la respuesta de Apps Script."
-        );
-
-        estado.textContent =
-            "No se pudieron cargar los audios.";
-
-        delete window[callback];
-
-    };
-
-
-    document.body.appendChild(script);
-
-}
-
-
-cargarAudios();
+ 
+    if (!folderId) {
+      mostrarMensaje("Falta especificar el parámetro folderId en la URL. Ejemplo: ?folderId=ID_DE_LA_CARPETA", true);
+    } else {
+      fetch(`${SCRIPT_URL}?folderId=${encodeURIComponent(folderId)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.error) {
+            mostrarMensaje(data.error, true);
+            return;
+          }
+ 
+          if (!data.files || data.files.length === 0) {
+            mostrarMensaje("No se encontraron archivos .mp3 o .wav en esta carpeta.");
+            return;
+          }
+ 
+          lista.innerHTML = "";
+          data.files.forEach(f => {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+            a.href = `https://drive.google.com/file/d/${f.id}/view`;
+            a.target = "_blank";
+            a.rel = "noopener noreferrer";
+            a.textContent = f.name;
+            li.appendChild(a);
+            lista.appendChild(li);
+          });
+        })
+        .catch(err => {
+          console.error("Error:", err);
+          mostrarMensaje("Ocurrió un error al cargar los archivos. Intentá recargar la página.", true);
+        });
+    }
 
 
 const MIN=70,MAX=160,STEP=10,DEFAULT=100,STORAGE_KEY="enlaces-zoom";
