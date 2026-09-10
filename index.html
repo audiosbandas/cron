@@ -53,6 +53,13 @@ body{font-family:Arial,sans-serif;overflow-x:hidden}
 <span id="zoom-level" aria-label="Nivel de zoom">100%</span>
 <button id="zoom-in" type="button" aria-label="Aumentar tamaño">+</button>
 </div>
+
+
+
+  <h1>Archivos de audio</h1>
+  <ul id="lista">
+    <li class="mensaje">Cargando...</li>
+  </ul>
     
 <script>
 
@@ -102,7 +109,7 @@ body{font-family:Arial,sans-serif;overflow-x:hidden}
         });
     }
 
-</script>
+//</script>
     
 
 const MIN=70,MAX=160,STEP=10,DEFAULT=100,STORAGE_KEY="enlaces-zoom";
@@ -125,6 +132,7 @@ zoomOut.addEventListener("click",()=>aplicarZoom(level-STEP));
 zoomIn.addEventListener("click",()=>aplicarZoom(level+STEP));
 zoomReset.addEventListener("click",()=>aplicarZoom(DEFAULT));
 aplicarZoom(level);
-//</script>
+
+</script>
 </body>
 </html>
