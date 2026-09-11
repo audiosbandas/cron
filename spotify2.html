@@ -229,63 +229,64 @@ aplicarZoom(level);
 
 
 (function () {
-// --- Configuración ---
-const SHEET_ID = "1-xJ2Qx7mZl-arUUuBr7MZ0eSI5zn1WbIm7NuerhDP_g";
-const GID = "0";
-const REFRESH_MS = 60000; // vuelve a sincronizar cada 60 segundos
-const COL_NOMBRE = 0; // columna A
-const COL_LINK = 1;   // columna B
-
-const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
-
-const statusEl = document.getElementById("sheet-sync-status");
-const timeEl = document.getElementById("sheet-sync-time");
-const listEl = document.getElementById("sheet-sync-list");
-
-function escapeHtml(str) {
-return String(str)
-.replace(/&/g, "&")
-.replace(/</g, "<")
-.replace(/>/g, ">")
-.replace(/"/g, """);
-}
-
-async function syncSheet() {
-statusEl.textContent = "Sincronizando...";
-try {
-const res = await fetch(url);
-const text = await res.text();
-// La respuesta viene envuelta como: google.visualization.Query.setResponse({...});
-const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1));
-const rows = json.table.rows;
-
-```
-  listEl.innerHTML = rows
-    .filter(r => r.c[COL_NOMBRE] && r.c[COL_NOMBRE].v && r.c[COL_LINK] && r.c[COL_LINK].v)
-    .map(r => {
-      const nombre = escapeHtml(r.c[COL_NOMBRE].v);
-      const link = escapeHtml(r.c[COL_LINK].v);
-      return `
-        <div class="record">
-          <a href="${link}" target="_blank" rel="noopener">${nombre}</a>
-          <span class="raw-url">"${link}"</span>
-        </div>`;
-    })
-    .join("");
-
-  statusEl.textContent = "";
-  timeEl.textContent = new Date().toLocaleTimeString();
-} catch (err) {
-  statusEl.textContent = "No se pudo sincronizar. Verificá que la hoja sea pública ('cualquiera con el enlace').";
-  console.error(err);
-}
-```
-
-}
-
-document.getElementById("sheet-sync-refresh").addEventListener("click", syncSheet);
-syncSheet();
-setInterval(syncSheet, REFRESH_MS);
+  // --- Configuración ---
+  const SHEET_ID = "1-xJ2Qx7mZl-arUUuBr7MZ0eSI5zn1WbIm7NuerhDP_g";
+  const GID = "0";
+  const REFRESH_MS = 60000; // vuelve a sincronizar cada 60 segundos
+  const COL_NOMBRE = 0; // columna A
+  const COL_LINK = 1;   // columna B
+ 
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
+ 
+  const statusEl = document.getElementById("sheet-sync-status");
+  const timeEl = document.getElementById("sheet-sync-time");
+  const listEl = document.getElementById("sheet-sync-list");
+ 
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+ 
+  async function syncSheet() {
+    statusEl.textContent = "Sincronizando...";
+    try {
+      const res = await fetch(url);
+      const text = await res.text();
+      // La respuesta viene envuelta como: google.visualization.Query.setResponse({...});
+      const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1));
+      const rows = json.table.rows;
+ 
+      listEl.innerHTML = rows
+        .filter(r => r.c[COL_NOMBRE] && r.c[COL_NOMBRE].v && r.c[COL_LINK] && r.c[COL_LINK].v)
+        .map(r => {
+          const nombre = escapeHtml(r.c[COL_NOMBRE].v);
+          const link = escapeHtml(r.c[COL_LINK].v);
+          return `
+            <div class="record">
+              <a href="${link}" target="_blank" rel="noopener">${nombre}</a>
+              <span class="raw-url">"${link}"</span>
+            </div>`;
+        })
+        .join("");
+ 
+      if (!listEl.innerHTML) {
+        listEl.innerHTML = '<p style="color:#999;font-size:14px;">No se encontraron registros.</p>';
+      }
+ 
+      statusEl.textContent = "";
+      timeEl.textContent = new Date().toLocaleTimeString();
+    } catch (err) {
+      statusEl.textContent = "No se pudo sincronizar. Verificá que la hoja sea pública ('cualquiera con el enlace').";
+      console.error(err);
+    }
+  }
+ 
+  document.getElementById("sheet-sync-refresh").addEventListener("click", syncSheet);
+  syncSheet();
+  setInterval(syncSheet, REFRESH_MS);
 })();
 
 
