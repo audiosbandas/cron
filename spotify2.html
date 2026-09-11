@@ -234,8 +234,23 @@ aplicarZoom(level);
   const GID = "0";
   //const REFRESH_MS = 60000; // vuelve a sincronizar cada 60 segundos
  const REFRESH_MS = 86400000; // vuelve a sincronizar cada "24 HORAS"
-  const COL_NOMBRE = 0; // columna A
-  const COL_LINK = 1;   // columna B
+  
+ 
+ const EMPTY_PLACEHOLDER = "-"; // texto para celdas sin valor
+  
+  //const COL_NOMBRE = 0; // columna A
+  //const COL_LINK = 1;   // columna B
+
+  
+  // Nombres de encabezado tal como figuran en la fila 1 de la planilla.
+  // El código busca estas columnas por nombre, sin importar en qué posición estén.
+  const HEADER_NOMBRE = "Nombre";
+  const HEADER_LINK = "Link";
+  const HEADER_ANIO = "Año";
+  const HEADER_ALBUM = "Álbum Spotify";
+
+
+  
  
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
  
@@ -250,6 +265,25 @@ aplicarZoom(level);
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
   }
+
+
+ 
+ // Busca el índice de columna cuyo encabezado coincide (sin importar mayúsculas/tildes de espacio) con el nombre buscado
+  function findColIndex(cols, headerName) {
+    const target = headerName.trim().toLowerCase();
+    return cols.findIndex(c => (c.label || "").trim().toLowerCase() === target);
+  }
+ 
+  // Devuelve el valor de una celda como texto, o el placeholder si está vacía / la columna no existe
+  function cellValue(row, colIndex) {
+    if (colIndex === -1) return "";
+    const cell = row.c[colIndex];
+    if (!cell || cell.v === null || cell.v === undefined || String(cell.v).trim() === "") return "";
+    return String(cell.v);
+  }
+
+
+
  
   async function syncSheet() {
     statusEl.textContent = "Sincronizando...";
@@ -260,23 +294,54 @@ aplicarZoom(level);
       const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1));
       const rows = json.table.rows;
       const cols = json.table.cols; // NUEVO
- 
-      listEl.innerHTML = rows
-        .filter(r => r.c[COL_NOMBRE] && r.c[COL_NOMBRE].v && r.c[COL_LINK] && r.c[COL_LINK].v)
 
-        .filter(r => { 
-         // NUEVO: descarta la fila si su contenido es igual al encabezado
-         // (respaldo por si la API no llega a excluirla con headers=1)
+
+
+
+           // Ubicación dinámica de columnas por nombre de encabezado
+      const idxNombre = findColIndex(cols, HEADER_NOMBRE);
+      const idxLink = findColIndex(cols, HEADER_LINK);
+      const idxAnio = findColIndex(cols, HEADER_ANIO);
+      const idxAlbum = findColIndex(cols, HEADER_ALBUM);
+ 
+      if (idxNombre === -1 || idxLink === -1) {
+        statusEl.textContent = `No se encontraron las columnas "${HEADER_NOMBRE}" y/o "${HEADER_LINK}" en la planilla.`;
+        return;
+      }
+
+
+
+      
+     
+      listEl.innerHTML = rows
+          /*   .filter(r => r.c[COL_NOMBRE] && r.c[COL_NOMBRE].v && r.c[COL_LINK] && r.c[COL_LINK].v)
+        .filter(r => {
+          // Descarta la fila si su contenido coincide con el encabezado de columna
+          // (respaldo por si la API no llega a excluirla con headers=1)
           const nombreVal = String(r.c[COL_NOMBRE].v).trim().toLowerCase();
           const linkVal = String(r.c[COL_LINK].v).trim().toLowerCase();
           const headerNombre = (cols[COL_NOMBRE].label || "").trim().toLowerCase();
           const headerLink = (cols[COL_LINK].label || "").trim().toLowerCase();
-         
           const looksLikeHeaderText = nombreVal === "nombre" && linkVal === "link";
+      */
 
-          //return nombreVal !== headerNombre || linkVal !== headerLink;
+
+          .filter(r => cellValue(r, idxNombre) && cellValue(r, idxLink)) // exige al menos Nombre y Link
+        .map(r => {
+          const nombreRaw = cellValue(r, idxNombre);
+          const linkRaw = cellValue(r, idxLink);
+          const anioRaw = cellValue(r, idxAnio) || EMPTY_PLACEHOLDER;
+          const albumRaw = cellValue(r, idxAlbum) || EMPTY_PLACEHOLDER;
+          const esAlbumLink = /^https?:\/\//i.test(albumRaw);
+ 
+          const nombre = escapeHtml(nombreRaw);
+          const link = escapeHtml(linkRaw);
+          const anio = escapeHtml(anioRaw);
+          const album = escapeHtml(albumRaw);
+
+
          
-          return (nombreVal !== headerNombre || linkVal !== headerLink) && !looksLikeHeaderText;
+  /*        return (nombreVal !== headerNombre || linkVal !== headerLink) && !looksLikeHeaderText;
           
         })
        
@@ -290,7 +355,26 @@ aplicarZoom(level);
             </div>`;
         })
         .join("");
- 
+ */
+
+
+
+
+        
+          return `
+            <div class="record">
+              <a href="${link}" target="_blank" rel="noopener">${nombre}</a>
+              <span class="raw-url">"${link}"</span>
+              <span class="extra-field"><strong>Año:</strong> ${anio}</span>
+              <span class="extra-field"><strong>Álbum Spotify:</strong> ${esAlbumLink ? `<a href="${album}" target="_blank" rel="noopener">${album}</a>` : album}</span>
+            </div>`;
+        })
+        .join("");
+
+         
+
+
+         
       if (!listEl.innerHTML) {
         listEl.innerHTML = '<p style="color:#999;font-size:14px;">No se encontraron registros.</p>';
       }
