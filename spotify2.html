@@ -263,13 +263,21 @@ aplicarZoom(level);
       listEl.innerHTML = rows
         .filter(r => r.c[COL_NOMBRE] && r.c[COL_NOMBRE].v && r.c[COL_LINK] && r.c[COL_LINK].v)
 
-        .filter(r => { // NUEVO: descarta la fila si su contenido es igual al encabezado
-            const nombreVal = String(r.c[COL_NOMBRE].v).trim().toLowerCase();
-            const linkVal = String(r.c[COL_LINK].v).trim().toLowerCase();
-            const headerNombre = (cols[COL_NOMBRE].label || "").trim().toLowerCase();
-            const headerLink = (cols[COL_LINK].label || "").trim().toLowerCase();
-            return nombreVal !== headerNombre || linkVal !== headerLink;
-          })
+        .filter(r => { 
+         // NUEVO: descarta la fila si su contenido es igual al encabezado
+         // (respaldo por si la API no llega a excluirla con headers=1)
+          const nombreVal = String(r.c[COL_NOMBRE].v).trim().toLowerCase();
+          const linkVal = String(r.c[COL_LINK].v).trim().toLowerCase();
+          const headerNombre = (cols[COL_NOMBRE].label || "").trim().toLowerCase();
+          const headerLink = (cols[COL_LINK].label || "").trim().toLowerCase();
+         
+          const looksLikeHeaderText = nombreVal === "nombre" && linkVal === "link";
+
+          //return nombreVal !== headerNombre || linkVal !== headerLink;
+         
+          return (nombreVal !== headerNombre || linkVal !== headerLink) && !looksLikeHeaderText;
+          
+        })
        
         .map(r => {
           const nombre = escapeHtml(r.c[COL_NOMBRE].v);
