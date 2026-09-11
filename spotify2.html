@@ -1,0 +1,264 @@
+SPOTIFY2  prueba con Script - cron
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRON · Spotify</title>
+<style>
+html,body{margin:0;padding:0}
+body{font-family:Arial,sans-serif;overflow-x:hidden}
+#content{width:100%;box-sizing:border-box;padding:24px;zoom:var(--zoom-factor,1)}
+#links{display:flex;flex-direction:column;gap:12px}
+#links a{overflow-wrap:anywhere}
+
+#estado{margin:8px 0}
+#zoom-control{position:fixed;top:12px;right:12px;z-index:9999;display:flex;align-items:center;gap:4px;padding:5px;background:rgba(255,255,255,.96);border:1px solid #ccc;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:14px}
+#zoom-control button{min-width:34px;height:30px;padding:0 7px;border:1px solid #bbb;border-radius:4px;background:#f5f5f5;color:#222;font:inherit;cursor:pointer}
+#zoom-control button:hover{background:#e9e9e9}
+#zoom-control button:active{background:#ddd}
+#zoom-control button:disabled{opacity:.45;cursor:default}
+#zoom-level{min-width:48px;text-align:center;user-select:none}
+@supports not (zoom:1){#content{transform-origin:top left;transform:scale(var(--zoom-factor,1));width:calc(100% / var(--zoom-factor,1))}}
+@media(max-width:480px){#zoom-control{top:8px;right:8px}#content{padding:16px}}
+
+
+ li {
+      margin-bottom: 0.6rem;
+      padding: 0.6rem 0.8rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+    }
+
+
+
+
+
+#sheet-sync-list .record {
+margin-bottom: 16px;
+padding-bottom: 12px;
+border-bottom: 1px solid #eee;
+}
+#sheet-sync-list .record a {
+color: #1a73e8;
+text-decoration: none;
+font-weight: 600;
+font-size: 15px;
+}
+#sheet-sync-list .record a:hover { text-decoration: underline; }
+#sheet-sync-list .record .raw-url {
+display: block;
+margin-top: 4px;
+font-size: 13px;
+color: #666;
+font-family: monospace;
+}
+
+
+
+
+
+
+<div id="sheet-sync-container" style="font-family: -apple-system, Segoe UI, Roboto, sans-serif; max-width: 700px; margin: 0 auto;">
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+<span style="font-size:13px; color:#666;">Última sincronización: <span id="sheet-sync-time">—</span></span>
+<button id="sheet-sync-refresh" style="font-size:12px; padding:4px 10px; border:1px solid #ccc; background:#f7f7f7; border-radius:6px; cursor:pointer;">Actualizar ahora</button>
+</div>
+<div id="sheet-sync-status" style="font-size:13px; color:#999; margin-bottom:8px;"></div>
+<div id="sheet-sync-list"></div>
+</div>
+
+
+
+ 
+
+ 
+  
+</style>
+</head>
+
+<body>
+<div id="content">
+<div id="links">
+<h2>Links SPOTIFY CRON</h2>
+<a>[2026] Disco CUANDO EL VIENTO SE CALME:</a>
+<a href="https://open.spotify.com/album/7K85SgjymMBJXyVn8hrNyh" target="_blank" rel="noopener noreferrer">Escuchar Disco en SPOTIFY</a>
+<br>
+
+<br><br>
+<a>Otros Audios:</a>
+<h3>Canciones</h3>
+<a href="https://open.spotify.com/track/79OPyPMhNT5lNzhHf92lUi" target="_blank" rel="noopener noreferrer">A La Deriva</a>
+<a>"https://open.spotify.com/track/79OPyPMhNT5lNzhHf92lUi"</a>
+
+<br>
+
+<a href="https://open.spotify.com/track/0FYtewtkWBaepQczV51v4S" target="_blank" rel="noopener noreferrer">Atmósfera Normal</a>
+<a>"https://open.spotify.com/track/0FYtewtkWBaepQczV51v4S"</a>
+
+<br>
+<br>
+
+<a href="https://open.spotify.com/track/6MOd3iOs1tTMjQGj7wZ6y3" target="_blank" rel="noopener noreferrer">En Silencio y Desconecto</a>
+<a>"https://open.spotify.com/track/6MOd3iOs1tTMjQGj7wZ6y3"</a>
+
+<br>
+<br>
+
+<a href="https://open.spotify.com/track/7F6ReBgoX1Dz5s2bu4uAMs" target="_blank" rel="noopener noreferrer">Popstar</a>
+<a>"https://open.spotify.com/track/7F6ReBgoX1Dz5s2bu4uAMs"</a>
+
+<br>
+
+
+<br>
+
+<a href="https://open.spotify.com/track/0koh6ZjmzV8CjgWuK3Tkeh" target="_blank" rel="noopener noreferrer">LENKA</a>
+<a>"https://open.spotify.com/track/0koh6ZjmzV8CjgWuK3Tkeh"</a>
+
+<br>
+
+
+<h3></h3>
+
+
+<br><br>
+<h2>LinkTree</h2>
+<a href="https://linktr.ee/cron.oficial" target="_blank" rel="noopener noreferrer">https://linktr.ee/cron.oficial</a>
+<br><br>
+<h3>Backup</h3>
+<a>Atom.bio</a>
+<a href="https://atom.bio/cron_oficial" target="_blank" rel="noopener noreferrer">https://atom.bio/cron_oficial</a>
+</div>
+</div>
+<div id="zoom-control" aria-label="Control de tamaño">
+<button id="zoom-reset" type="button" aria-label="Restablecer tamaño">Reset</button>
+<button id="zoom-out" type="button" aria-label="Reducir tamaño">−</button>
+<span id="zoom-level" aria-label="Nivel de zoom">100%</span>
+<button id="zoom-in" type="button" aria-label="Aumentar tamaño">+</button>
+</div>
+
+
+
+  <h1>Archivos de audio</h1>
+  <ul id="lista">
+    <li class="mensaje"></li>
+  </ul>
+    
+<script>
+
+
+    
+
+const MIN=70,MAX=160,STEP=10,DEFAULT=100,STORAGE_KEY="enlaces-zoom";
+const content=document.getElementById("content");
+const zoomLabel=document.getElementById("zoom-level");
+const zoomOut=document.getElementById("zoom-out");
+const zoomIn=document.getElementById("zoom-in");
+const zoomReset=document.getElementById("zoom-reset");
+let level=DEFAULT;
+try{const saved=Number(localStorage.getItem(STORAGE_KEY));if(Number.isFinite(saved)&&saved>=MIN&&saved<=MAX&&saved%STEP===0)level=saved;}catch(e){}
+function aplicarZoom(valor){
+    level=Math.min(MAX,Math.max(MIN,valor));
+    content.style.setProperty("--zoom-factor",level/100);
+    zoomLabel.textContent=level+"%";
+    zoomOut.disabled=level<=MIN;
+    zoomIn.disabled=level>=MAX;
+    try{localStorage.setItem(STORAGE_KEY,String(level));}catch(e){}
+}
+zoomOut.addEventListener("click",()=>aplicarZoom(level-STEP));
+zoomIn.addEventListener("click",()=>aplicarZoom(level+STEP));
+zoomReset.addEventListener("click",()=>aplicarZoom(DEFAULT));
+aplicarZoom(level);
+
+
+
+
+
+<script>
+(function () {
+// --- Configuración ---
+const SHEET_ID = "1-xJ2Qx7mZl-arUUuBr7MZ0eSI5zn1WbIm7NuerhDP_g";
+const GID = "0";
+const REFRESH_MS = 60000; // vuelve a sincronizar cada 60 segundos
+const COL_NOMBRE = 0; // columna A
+const COL_LINK = 1;   // columna B
+
+const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
+
+const statusEl = document.getElementById("sheet-sync-status");
+const timeEl = document.getElementById("sheet-sync-time");
+const listEl = document.getElementById("sheet-sync-list");
+
+function escapeHtml(str) {
+return String(str)
+.replace(/&/g, "&")
+.replace(/</g, "<")
+.replace(/>/g, ">")
+.replace(/"/g, """);
+}
+
+async function syncSheet() {
+statusEl.textContent = "Sincronizando...";
+try {
+const res = await fetch(url);
+const text = await res.text();
+// La respuesta viene envuelta como: google.visualization.Query.setResponse({...});
+const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1));
+const rows = json.table.rows;
+
+```
+  listEl.innerHTML = rows
+    .filter(r => r.c[COL_NOMBRE] && r.c[COL_NOMBRE].v && r.c[COL_LINK] && r.c[COL_LINK].v)
+    .map(r => {
+      const nombre = escapeHtml(r.c[COL_NOMBRE].v);
+      const link = escapeHtml(r.c[COL_LINK].v);
+      return `
+        <div class="record">
+          <a href="${link}" target="_blank" rel="noopener">${nombre}</a>
+          <span class="raw-url">"${link}"</span>
+        </div>`;
+    })
+    .join("");
+
+  statusEl.textContent = "";
+  timeEl.textContent = new Date().toLocaleTimeString();
+} catch (err) {
+  statusEl.textContent = "No se pudo sincronizar. Verificá que la hoja sea pública ('cualquiera con el enlace').";
+  console.error(err);
+}
+```
+
+}
+
+document.getElementById("sheet-sync-refresh").addEventListener("click", syncSheet);
+syncSheet();
+setInterval(syncSheet, REFRESH_MS);
+})();
+
+
+
+
+
+
+
+ 
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+</body>
+</html>
