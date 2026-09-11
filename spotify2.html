@@ -35,43 +35,75 @@ body{font-family:Arial,sans-serif;overflow-x:hidden}
 
 
 
-#sheet-sync-list .record {
-margin-bottom: 16px;
-padding-bottom: 12px;
-border-bottom: 1px solid #eee;
-}
-#sheet-sync-list .record a {
-color: #1a73e8;
-text-decoration: none;
-font-weight: 600;
-font-size: 15px;
-}
-#sheet-sync-list .record a:hover { text-decoration: underline; }
-#sheet-sync-list .record .raw-url {
-display: block;
-margin-top: 4px;
-font-size: 13px;
-color: #666;
-font-family: monospace;
-}
+  body {
+    font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+    background: #fafafa;
+    margin: 0;
+    padding: 30px 16px;
+  }
+  #sheet-sync-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+  #sheet-sync-container h1 {
+    font-size: 18px;
+    margin: 0 0 16px 0;
+  }
+  .sheet-sync-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .sheet-sync-header span {
+    font-size: 13px;
+    color: #666;
+  }
+  #sheet-sync-refresh {
+    font-size: 12px;
+    padding: 4px 10px;
+    border: 1px solid #ccc;
+    background: #f7f7f7;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  #sheet-sync-refresh:hover { background: #eee; }
+  #sheet-sync-status {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 8px;
+    min-height: 16px;
+  }
+  #sheet-sync-list .record {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+  }
+  #sheet-sync-list .record:last-child {
+    border-bottom: none;
+  }
+  #sheet-sync-list .record a {
+    color: #1a73e8;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  #sheet-sync-list .record a:hover { text-decoration: underline; }
+  #sheet-sync-list .record .raw-url {
+    display: block;
+    margin-top: 4px;
+    font-size: 13px;
+    color: #666;
+    font-family: monospace;
+    word-break: break-all;
+  }
 
 
 
-
-
-
-<div id="sheet-sync-container" style="font-family: -apple-system, Segoe UI, Roboto, sans-serif; max-width: 700px; margin: 0 auto;">
-<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-<span style="font-size:13px; color:#666;">Última sincronización: <span id="sheet-sync-time">—</span></span>
-<button id="sheet-sync-refresh" style="font-size:12px; padding:4px 10px; border:1px solid #ccc; background:#f7f7f7; border-radius:6px; cursor:pointer;">Actualizar ahora</button>
-</div>
-<div id="sheet-sync-status" style="font-size:13px; color:#999; margin-bottom:8px;"></div>
-<div id="sheet-sync-list"></div>
-</div>
-
-
-
- 
 
  
   
@@ -145,7 +177,27 @@ font-family: monospace;
   <ul id="lista">
     <li class="mensaje"></li>
   </ul>
-    
+
+
+
+
+
+<div id="sheet-sync-container" style="font-family: -apple-system, Segoe UI, Roboto, sans-serif; max-width: 700px; margin: 0 auto;">
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+<span style="font-size:13px; color:#666;">Última sincronización: <span id="sheet-sync-time">—</span></span>
+<button id="sheet-sync-refresh" style="font-size:12px; padding:4px 10px; border:1px solid #ccc; background:#f7f7f7; border-radius:6px; cursor:pointer;">Actualizar ahora</button>
+</div>
+<div id="sheet-sync-status" style="font-size:13px; color:#999; margin-bottom:8px;"></div>
+<div id="sheet-sync-list"></div>
+</div>
+
+
+
+
+
+
+
+ 
 <script>
 
 
@@ -176,7 +228,6 @@ aplicarZoom(level);
 
 
 
-<script>
 (function () {
 // --- Configuración ---
 const SHEET_ID = "1-xJ2Qx7mZl-arUUuBr7MZ0eSI5zn1WbIm7NuerhDP_g";
