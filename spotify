@@ -86,51 +86,6 @@ body{font-family:Arial,sans-serif;overflow-x:hidden}
     
 <script>
 
-    // Reemplazar por la URL de tu Apps Script (terminada en /exec)
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjGvypOF81CUU5_gI4T_iiY-Otn3pH60A_JEsvdykRtidnubTHsO0rThUfTJwEsRST/exec";
- 
-    const params = new URLSearchParams(window.location.search);
-    const folderId = params.get("folderId");
- 
-    const lista = document.getElementById("lista");
- 
-    function mostrarMensaje(texto, esError = false) {
-      lista.innerHTML = `<li class="mensaje${esError ? ' error' : ''}">${texto}</li>`;
-    }
- 
-    if (!folderId) {
-      mostrarMensaje("Falta especificar el parámetro folderId en la URL. Ejemplo: ?folderId=ID_DE_LA_CARPETA", true);
-    } else {
-      fetch(`${SCRIPT_URL}?folderId=${encodeURIComponent(folderId)}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.error) {
-            mostrarMensaje(data.error, true);
-            return;
-          }
- 
-          if (!data.files || data.files.length === 0) {
-            mostrarMensaje("No se encontraron archivos .mp3 o .wav en esta carpeta.");
-            return;
-          }
- 
-          lista.innerHTML = "";
-          data.files.forEach(f => {
-            const li = document.createElement("li");
-            const a = document.createElement("a");
-            a.href = `https://drive.google.com/file/d/${f.id}/view`;
-            a.target = "_blank";
-            a.rel = "noopener noreferrer";
-            a.textContent = f.name;
-            li.appendChild(a);
-            lista.appendChild(li);
-          });
-        })
-        .catch(err => {
-          console.error("Error:", err);
-          mostrarMensaje("Ocurrió un error al cargar los archivos. Intentá recargar la página.", true);
-        });
-    }
 
     
 
