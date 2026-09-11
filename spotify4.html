@@ -1,0 +1,163 @@
+SPOTIFY - 4
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinksSPOTIFYcron - Sincronizado</title>
+<style>
+  body {
+    font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+    background: #fafafa;
+    margin: 0;
+    padding: 30px 16px;
+  }
+  #sheet-sync-container {
+    max-width: 700px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    padding: 20px 24px;
+  }
+  #sheet-sync-container h1 {
+    font-size: 18px;
+    margin: 0 0 16px 0;
+  }
+  .sheet-sync-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .sheet-sync-header span {
+    font-size: 13px;
+    color: #666;
+  }
+  #sheet-sync-refresh {
+    font-size: 12px;
+    padding: 4px 10px;
+    border: 1px solid #ccc;
+    background: #f7f7f7;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  #sheet-sync-refresh:hover { background: #eee; }
+  #sheet-sync-status {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 8px;
+    min-height: 16px;
+  }
+  #sheet-sync-list .record {
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eee;
+  }
+  #sheet-sync-list .record:last-child {
+    border-bottom: none;
+  }
+  #sheet-sync-list .record a {
+    color: #1a73e8;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+  }
+  #sheet-sync-list .record a:hover { text-decoration: underline; }
+  #sheet-sync-list .record .raw-url {
+    display: block;
+    margin-top: 4px;
+    font-size: 13px;
+    color: #666;
+    font-family: monospace;
+    word-break: break-all;
+  }
+</style>
+</head>
+<body>
+
+<div id="sheet-sync-container">
+  <h1>LinksSPOTIFYcron</h1>
+  <div class="sheet-sync-header">
+    <span>Última sincronización: <span id="sheet-sync-time">—</span></span>
+    <button id="sheet-sync-refresh">Actualizar ahora</button>
+  </div>
+  <div id="sheet-sync-status"></div>
+  <div id="sheet-sync-list"></div>
+</div>
+
+<script>
+(function () {
+  // --- Configuración ---
+  const SHEET_ID = "1-xJ2Qx7mZl-arUUuBr7MZ0eSI5zn1WbIm7NuerhDP_g";
+  const GID = "0";
+  const REFRESH_MS = 60000; // vuelve a sincronizar cada 60 segundos
+  const COL_NOMBRE = 0; // columna A
+  const COL_LINK = 1;   // columna B
+
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&gid=${GID}`;
+
+  const statusEl = document.getElementById("sheet-sync-status");
+  const timeEl = document.getElementById("sheet-sync-time");
+  const listEl = document.getElementById("sheet-sync-list");
+
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  async function syncSheet() {
+    statusEl.textContent = "Sincronizando...";
+    try {
+      const res = await fetch(url);
+      const text = await res.text();
+      // La respuesta viene envuelta como: google.visualization.Query.setResponse({...});
+      const json = JSON.parse(text.substring(text.indexOf("{"), text.lastIndexOf("}") + 1));
+      const rows = json.table.rows;
+      const cols = json.table.cols;
+
+      listEl.innerHTML = rows
+        .filter(r => r.c[COL_NOMBRE] && r.c[COL_NOMBRE].v && r.c[COL_LINK] && r.c[COL_LINK].v)
+        .filter(r => {
+          // Descarta la fila si su contenido coincide con el encabezado de columna
+          const nombreVal = String(r.c[COL_NOMBRE].v).trim().toLowerCase();
+          const linkVal = String(r.c[COL_LINK].v).trim().toLowerCase();
+          const headerNombre = (cols[COL_NOMBRE].label || "").trim().toLowerCase();
+          const headerLink = (cols[COL_LINK].label || "").trim().toLowerCase();
+          return nombreVal !== headerNombre || linkVal !== headerLink;
+        })
+        .map(r => {
+          const nombre = escapeHtml(r.c[COL_NOMBRE].v);
+          const link = escapeHtml(r.c[COL_LINK].v);
+          return `
+            <div class="record">
+              <a href="${link}" target="_blank" rel="noopener">${nombre}</a>
+              <span class="raw-url">"${link}"</span>
+            </div>`;
+        })
+        .join("");
+
+      if (!listEl.innerHTML) {
+        listEl.innerHTML = '<p style="color:#999;font-size:14px;">No se encontraron registros.</p>';
+      }
+
+      statusEl.textContent = "";
+      timeEl.textContent = new Date().toLocaleTimeString();
+    } catch (err) {
+      statusEl.textContent = "No se pudo sincronizar. Verificá que la hoja sea pública ('cualquiera con el enlace').";
+      console.error(err);
+    }
+  }
+
+  document.getElementById("sheet-sync-refresh").addEventListener("click", syncSheet);
+  syncSheet();
+  setInterval(syncSheet, REFRESH_MS);
+})();
+</script>
+
+</body>
+</html>
