@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRON · Spotify</title>
+<style>
+html,body{margin:0;padding:0}
+body{font-family:Arial,sans-serif;overflow-x:hidden}
+#content{width:100%;box-sizing:border-box;padding:24px;zoom:var(--zoom-factor,1)}
+#links{display:flex;flex-direction:column;gap:12px}
+#links a{overflow-wrap:anywhere}
+
+#estado{margin:8px 0}
+#zoom-control{position:fixed;top:12px;right:12px;z-index:9999;display:flex;align-items:center;gap:4px;padding:5px;background:rgba(255,255,255,.96);border:1px solid #ccc;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:14px}
+#zoom-control button{min-width:34px;height:30px;padding:0 7px;border:1px solid #bbb;border-radius:4px;background:#f5f5f5;color:#222;font:inherit;cursor:pointer}
+#zoom-control button:hover{background:#e9e9e9}
+#zoom-control button:active{background:#ddd}
+#zoom-control button:disabled{opacity:.45;cursor:default}
+#zoom-level{min-width:48px;text-align:center;user-select:none}
+@supports not (zoom:1){#content{transform-origin:top left;transform:scale(var(--zoom-factor,1));width:calc(100% / var(--zoom-factor,1))}}
+@media(max-width:480px){#zoom-control{top:8px;right:8px}#content{padding:16px}}
+
+
+ li {
+      margin-bottom: 0.6rem;
+      padding: 0.6rem 0.8rem;
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+    }
+  
+  
+</style>
+</head>
+
+<body>
+<div id="content">
+<div id="links">
+<h2>Links SPOTIFY CRON</h2>
+<a>[2026] Disco CUANDO EL VIENTO SE CALME:</a>
+<a href="https://open.spotify.com/album/7K85SgjymMBJXyVn8hrNyh" target="_blank" rel="noopener noreferrer">Escuchar Disco en SPOTIFY</a>
+<br>
+
+<br><br>
+<a>Otros Audios:</a>
+<h3>Canciones:</h3>
+<br><br>
+<a href="https://open.spotify.com/track/79OPyPMhNT5lNzhHf92lUi" target="_blank" rel="noopener noreferrer">A La Deriva</a>
+<br>
+<h3></h3>
+<a>"https://open.spotify.com/track/79OPyPMhNT5lNzhHf92lUi"</a>
+
+<br>
+
+
+
+<a href="https://open.spotify.com/track/0FYtewtkWBaepQczV51v4S" target="_blank" rel="noopener noreferrer">Atmósfera Normal</a>
+<br>
+<h3></h3>
+<a>"https://open.spotify.com/track/0FYtewtkWBaepQczV51v4S"</a>
+
+<br>
+
+<br><br>
+<h2>LinkTree</h2>
+<a href="https://linktr.ee/cron.oficial" target="_blank" rel="noopener noreferrer">https://linktr.ee/cron.oficial</a>
+<br><br>
+<h3>Backup</h3>
+<a>Atom.bio</a>
+<a href="https://atom.bio/cron_oficial" target="_blank" rel="noopener noreferrer">https://atom.bio/cron_oficial</a>
+</div>
+</div>
+<div id="zoom-control" aria-label="Control de tamaño">
+<button id="zoom-reset" type="button" aria-label="Restablecer tamaño">Reset</button>
+<button id="zoom-out" type="button" aria-label="Reducir tamaño">−</button>
+<span id="zoom-level" aria-label="Nivel de zoom">100%</span>
+<button id="zoom-in" type="button" aria-label="Aumentar tamaño">+</button>
+</div>
+
+
+
+  <h1>Archivos de audio</h1>
+  <ul id="lista">
+    <li class="mensaje">Cargando...</li>
+  </ul>
+    
+<script>
+
+
+    
+
+const MIN=70,MAX=160,STEP=10,DEFAULT=100,STORAGE_KEY="enlaces-zoom";
+const content=document.getElementById("content");
+const zoomLabel=document.getElementById("zoom-level");
+const zoomOut=document.getElementById("zoom-out");
+const zoomIn=document.getElementById("zoom-in");
+const zoomReset=document.getElementById("zoom-reset");
+let level=DEFAULT;
+try{const saved=Number(localStorage.getItem(STORAGE_KEY));if(Number.isFinite(saved)&&saved>=MIN&&saved<=MAX&&saved%STEP===0)level=saved;}catch(e){}
+function aplicarZoom(valor){
+    level=Math.min(MAX,Math.max(MIN,valor));
+    content.style.setProperty("--zoom-factor",level/100);
+    zoomLabel.textContent=level+"%";
+    zoomOut.disabled=level<=MIN;
+    zoomIn.disabled=level>=MAX;
+    try{localStorage.setItem(STORAGE_KEY,String(level));}catch(e){}
+}
+zoomOut.addEventListener("click",()=>aplicarZoom(level-STEP));
+zoomIn.addEventListener("click",()=>aplicarZoom(level+STEP));
+zoomReset.addEventListener("click",()=>aplicarZoom(DEFAULT));
+aplicarZoom(level);
+
+</script>
+</body>
+</html>
