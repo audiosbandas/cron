@@ -105,6 +105,7 @@ SPOTIFY - 4
   // El código busca estas columnas por nombre, sin importar en qué posición estén.
   const HEADER_NOMBRE = "Nombre";
   const HEADER_LINK = "LinkSpotify";
+  const HEADER_YOUTUBE = "linkYoutube";
   const HEADER_ANIO = "Año";
   const HEADER_ALBUM = "Álbum Spotify";
 
@@ -157,6 +158,7 @@ SPOTIFY - 4
            // Ubicación dinámica de columnas por nombre de encabezado
       const idxNombre = findColIndex(cols, HEADER_NOMBRE);
       const idxLink = findColIndex(cols, HEADER_LINK);
+      const idxYoutube = findColIndex(cols, HEADER_YOUTUBE);
       const idxAnio = findColIndex(cols, HEADER_ANIO);
       const idxAlbum = findColIndex(cols, HEADER_ALBUM);
  
@@ -185,12 +187,14 @@ SPOTIFY - 4
         .map(r => {
           const nombreRaw = cellValue(r, idxNombre);
           const linkRaw = cellValue(r, idxLink);
+          const youtubeRaw = cellValue(r, idxYoutube);
           const anioRaw = cellValue(r, idxAnio) || EMPTY_PLACEHOLDER;
           const albumRaw = cellValue(r, idxAlbum) || EMPTY_PLACEHOLDER;
           const esAlbumLink = /^https?:\/\//i.test(albumRaw);
  
           const nombre = escapeHtml(nombreRaw);
           const link = escapeHtml(linkRaw);
+          const youtube = escapeHtml(youtubeRaw);
           const anio = escapeHtml(anioRaw);
           const album = escapeHtml(albumRaw);
 
@@ -201,6 +205,7 @@ SPOTIFY - 4
             <div class="record">
               <a href="${link}" target="_blank" rel="noopener">${nombre}</a>
               <span class="raw-url">"${link}"</span>
+              <a href="${youtube}" target="_blank" rel="noopener">${nombre}</a>
               <span class="extra-field"><strong>Año:</strong> ${anio}</span>
               <span class="extra-field"><strong>Álbum Spotify:</strong> ${esAlbumLink ? `<a href="${album}" target="_blank" rel="noopener">${album}</a>` : album}</span>
             </div>`;
